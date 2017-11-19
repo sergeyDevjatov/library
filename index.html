@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+
+    <title>Библиотека</title>
+    <meta name="description" content="Информационная система библиотеки">
+    <meta name="author" content="sergeydevjatov">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+</head>
+
+<body>
+<div id="app">
+    <nav id="menu" class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="./">Библиотека</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbar">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <router-link class="nav-link" to="/" exact>Главная</router-link>
+                </li>
+                <li class="nav-item">
+                    <router-link class="nav-link" to="/books">Книги</router-link>
+                </li>
+                <li class="nav-item">
+                    <router-link class="nav-link" to="/authors">Авторы</router-link>
+                </li>
+                <li class="nav-item">
+                    <router-link class="nav-link" to="/genres">Жанры</router-link>
+                </li>
+            </ul>
+            <router-view id="auth" name="auth"></router-view>
+        </div>
+    </nav>
+    <router-view id="page" name="page"></router-view>
+</div>
+</body>
+<script src="dist/bundle.js"></script>
+</html>
