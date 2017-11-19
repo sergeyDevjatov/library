@@ -18,7 +18,8 @@ module.exports = {
             '.css'
         ],
         alias: {
-            'vue$': 'vue/dist/vue.esm.js'
+            'vue$': 'vue/dist/vue.esm.js',
+            'vue-router': 'vue-router/dist/vue-router.esm.js'
         }
     },
     module: {
@@ -57,6 +58,11 @@ module.exports = {
                 query: {
                     presets: ['env']
                 }
+            },
+            {
+                test: /\.js$/,
+                loader: "source-map-loader",
+                enforce: "pre"
             },
             {
                 test: /\.vue$/,

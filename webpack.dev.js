@@ -18,7 +18,7 @@ module.exports = {
         ],
         alias: {
             'vue': 'vue/dist/vue.esm.js',
-            'vue-router': 'vue-router/dist/vue-router.common.js'
+            'vue-router': 'vue-router/dist/vue-router.esm.js'
         }
     },
     module: {
