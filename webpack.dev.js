@@ -19,7 +19,8 @@ module.exports = {
         alias: {
             'vue$': 'vue/dist/vue.esm.js',
             'vue-router$': 'vue-router/dist/vue-router.esm.js',
-            'socket.io$': 'socket.io-client/dist/socket.io.js'
+            'socket.io$': 'socket.io-client/dist/socket.io.js',
+            'mongodb$': 'socket.io-client/dist/socket.io.js'
         }
     },
     module: {
