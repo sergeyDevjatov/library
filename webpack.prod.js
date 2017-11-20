@@ -19,7 +19,8 @@ module.exports = {
         ],
         alias: {
             'vue$': 'vue/dist/vue.esm.js',
-            'vue-router': 'vue-router/dist/vue-router.esm.js'
+            'vue-router$': 'vue-router/dist/vue-router.esm.js',
+            'socket.io$': 'socket.io/socket.io.js'
         }
     },
     module: {
@@ -78,6 +79,8 @@ module.exports = {
         new webpack.ProvidePlugin({
             $: 'jquery',
             jQuery: 'jquery',
+            _: 'underscore',
+            underscore: 'underscore',
             'window.jQuery': 'jquery',
             Popper: ['popper.js', 'default'],
         }),
