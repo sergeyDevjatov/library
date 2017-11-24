@@ -1,5 +1,7 @@
 import 'bootstrap';
+import 'bootstrap-datepicker';
 import './../style/index.scss';
+import './../style/index.less';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import VeeValidate from 'vee-validate';
