@@ -5,6 +5,7 @@
   "main": "src/index.js",
   "dependencies": {
     "bootstrap": "^4.0.0-beta.2",
+    "bootstrap-datepicker": "^1.7.1",
     "connect": "^3.6.5",
     "cookie-parser": "^1.4.3",
     "express": "^4.16.2",
@@ -28,6 +29,8 @@
     "babel-preset-env": "^1.6.1",
     "css-loader": "^0.28.7",
     "file-loader": "^1.1.5",
+    "less": "^2.7.3",
+    "less-loader": "^4.0.5",
     "node-sass": "^4.7.1",
     "postcss-loader": "^2.0.8",
     "precss": "^2.0.0",

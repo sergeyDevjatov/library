@@ -28,11 +28,7 @@ module.exports = {
         rules: [
             {
                 test: /\.(scss)$/,
-                use: [{
-                    loader: 'style-loader', // inject CSS to page
-                }, {
-                    loader: 'css-loader', // translates CSS into CommonJS modules
-                }, {
+                use: ['style-loader', 'css-loader', {
                     loader: 'postcss-loader', // Run post css actions
                     options: {
                         plugins: function () { // post css plugins, can be exported to postcss.config.js
@@ -42,16 +38,16 @@ module.exports = {
                             ];
                         }
                     }
-                }, {
-                    loader: 'sass-loader' // compiles SASS to CSS
-                }]
+                }, 'sass-loader' ]
+            },
+            {
+                test: /\.(less)$/,
+                exclude: /(node_modules|bower_components|dist)/,
+                use: ["style-loader", "css-loader", "less-loader"],
             },
             {
                 test: /\.css$/,
-                loaders: [
-                    require.resolve('style-loader'),
-                    require.resolve('css-loader'),
-                ]
+                use: ["style-loader", "css-loader"],
             },
             {
                 test: /\.js$/,

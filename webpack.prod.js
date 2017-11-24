@@ -48,6 +48,11 @@ module.exports = {
                 }]
             },
             {
+                test: /\.(less)$/,
+                exclude: /(node_modules|bower_components|dist)/,
+                use: ["style-loader", "css-loader", "less-loader"],
+            },
+            {
                 test: /\.css$/,
                 loaders: [
                     require.resolve('style-loader'),
