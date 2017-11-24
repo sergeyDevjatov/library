@@ -14,8 +14,12 @@ module.exports = function () {
 
     mongoose.Promise = global.Promise;
 
+    orderSchema = mongoose.Schema({
+        receivingDate: {type: Date, default: Date.now}, returningDate: Date
+    });
+
     userSchema = mongoose.Schema({
-        login: String, password: String, salt: String
+        login: String, password: String, salt: String, orders: [orderSchema]
     });
 
     authorSchema = mongoose.Schema({
@@ -27,7 +31,7 @@ module.exports = function () {
     });
 
     bookSchema = mongoose.Schema({
-        title: String, author: authorSchema, genre: genreSchema
+        title: String, author: authorSchema, genre: genreSchema, order: orderSchema
     });
 
     return {
@@ -35,6 +39,7 @@ module.exports = function () {
         Author: mongoose.model('Author', authorSchema),
         Genre: mongoose.model('Genre', genreSchema),
         Book: mongoose.model('Book', bookSchema),
+        Order: mongoose.model('Order', orderSchema),
         close: mongoose.connection.close
     };
 };
