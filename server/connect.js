@@ -1,5 +1,8 @@
 module.exports = function () {
     const mongoose = require('mongoose');
+    const _ = require('underscore');
+    const dateFormat = require('./dateformat-ru.js');
+    const bornAndDeadFormat = _.partial(dateFormat, _, "d mmmm yyyy года");
     const login = 'root',
         password = 'yUxULlfXhwk1ijkM';
 
@@ -25,6 +28,10 @@ module.exports = function () {
     authorSchema = mongoose.Schema({
         name: String, born: Date, dead: Date
     });
+
+    authorSchema.virtual('bornFormatted').get(function (){ return bornAndDeadFormat(this.born); });
+
+    authorSchema.virtual('deadFormatted').get(function (){ return bornAndDeadFormat(this.dead); });
 
     genreSchema = mongoose.Schema({
         name: String

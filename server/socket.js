@@ -73,8 +73,8 @@ module.exports = function (server, sessionStore, cookieParser) {
             return {
                 id: author._id,
                 name: author.name,
-                born: author.born,
-                dead: author.dead
+                born: author.bornFormatted,
+                dead: author.deadFormatted
             }
         }
 
