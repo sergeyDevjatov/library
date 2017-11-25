@@ -17,12 +17,11 @@ module.exports = function () {
 
     mongoose.Promise = global.Promise;
 
-    orderSchema = mongoose.Schema({
-        receivingDate: {type: Date, default: Date.now}, returningDate: Date
-    });
-
     userSchema = mongoose.Schema({
-        login: String, password: String, salt: String, orders: [orderSchema]
+        login: String, password: String, salt: String, orders: [{
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Order'
+        }]
     });
 
     authorSchema = mongoose.Schema({
@@ -38,8 +37,25 @@ module.exports = function () {
     });
 
     bookSchema = mongoose.Schema({
-        title: String, author: authorSchema, genre: genreSchema, order: orderSchema
+        title: String, author: authorSchema, genre: genreSchema, order: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Order'
+        }
     });
+
+    orderSchema = mongoose.Schema({
+        receivingDate: {
+            type: Date,
+            default: Date.now
+        },
+        returningDate: Date,
+        user: String,
+        book: bookSchema
+    });
+
+    orderSchema.methods.isOrderFor = function(userLogin){
+        return this.user === userLogin;
+    };
 
     return {
         User: mongoose.model('User', userSchema),

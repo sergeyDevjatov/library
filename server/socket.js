@@ -61,46 +61,50 @@ module.exports = function (server, sessionStore, cookieParser) {
         // Filter data in case when from db was got unexpected fields
         // (just some security)
         function bookFilter(book){
-            return {
+            return book ? {
                 id: book._id,
                 title: book.title,
                 author: authorFilter(book.author),
-                genre: genreFilter(book.genre)
-            }
+                genre: genreFilter(book.genre),
+                isOrder: book.isOrder,
+                orderByUser: book.orderByUser,
+            } : null;
         }
 
         function authorFilter(author) {
-            return {
+            return author ? {
                 id: author._id,
                 name: author.name,
                 born: author.bornFormatted,
                 dead: author.deadFormatted
-            }
+            } : null;
         }
 
         function genreFilter(genre) {
-            return {
+            return genre ? {
                 id: genre._id,
                 name: genre.name
-            }
+            } : null;
         }
 
         function orderFilter(order) {
-            return {
+            return order ? {
                 id: order._id,
                 receivingDate: order.receivingDate,
-                returningDate: order.returningDate
-            }
+                returningDate: order.returningDate,
+                user: order.user,
+                book: bookFilter(order.book)
+            } : null;
         }
 
         // add handlers to database entities using mechanic like reflection
         _.each([
-            {model: db.Book, requestNamespace: 'books', filter: bookFilter},
+            //{model: db.Book, requestNamespace: 'books', filter: bookFilter},
             {model: db.Genre, requestNamespace: 'genres', filter: genreFilter},
             {model: db.Author, requestNamespace: 'authors', filter: authorFilter},
             {model: db.Order, requestNamespace: 'orders', filter: orderFilter},
         ], function addHandler(entity){
-            socket.on(entity.requestNamespace + '.getAll', function onGetDataRequest(data){
+            socket.on(entity.requestNamespace + '.getAll', function onGetAllDataRequest(data){
                 entity.model.find(null, function onFind(err, elements){
                     if(!err) {
                         socket.emit(entity.requestNamespace + '.getAll-success', _.map(elements, entity.filter));
@@ -109,6 +113,24 @@ module.exports = function (server, sessionStore, cookieParser) {
                         socket.emit(entity.requestNamespace + '.getAll-fail', err);
                     }
                 });
+            });
+        });
+
+
+        socket.on('books.getAll', function onGetAllBooksRequest(data){
+            db.Book.find().populate('order').exec(function onFind(err, books){
+                if(!err) {
+                    socket.emit('books.getAll-success', _.map(books, function filter(book){
+                        book.isOrder = book.order !== null && typeof book.order !== 'undefined';
+                        if(book.isOrder) {
+                            book.orderByUser = session.login !== null && book.order.user === session.login;
+                        }
+                        return bookFilter(book);
+                    }));
+                }
+                else {
+                    socket.emit(entity.requestNamespace + '.getAll-fail', err);
+                }
             });
         });
 
@@ -169,31 +191,34 @@ module.exports = function (server, sessionStore, cookieParser) {
 
         socket.on('orders.add', function onAddOrder(data){
             let order = new db.Order({
-                returningDate: data.returningDate
+                returningDate: data.returningDate,
+                user: session.login
             });
             if(session.login) {
                 order.save(function onSave(err) {
                     if (!err)
-                        db.User.findOneAndUpdate({login: session.login}, {$push: {orders: order}}, null, onUserUpdate);
+                        db.User.findOneAndUpdate({login: session.login}, {$push: {orders: order._id}}, null, onUserUpdate);
                     else
                         socket.emit('orders.add-fail', err);
                 });
             }
             else{
-                console.log(new Error('Not authorized error', 'NOAUTH'));
                 socket.emit('orders.add-fail', {message: 'Not authorized error', code: 'NOAUTH'});
             }
 
-            function onUserUpdate(err) {
-                if (!err)
-                    db.Book.findOneAndUpdate({_id: data.bookId}, {order: order}, null, onBookUpdate);
+            function onUserUpdate(err, user) {
+                if (!err) {
+                    db.Book.findOneAndUpdate({_id: data.bookId}, {order: order._id}, null, onBookUpdate);
+                }
                 else
                     socket.emit('orders.add-fail', err);
             }
 
-            function onBookUpdate(err){
-                if (!err)
+            function onBookUpdate(err, book){
+                if (!err){
+                    order.book = book;
                     socket.emit('orders.add-success', {id: order.id});
+                }
                 else
                     socket.emit('orders.add-fail', err);
             }

@@ -26,13 +26,13 @@
                         </router-link>
                     </td>
                     <td>
-                        <a v-if="!book.order" class="text-success" href="#"
+                        <p v-if="book.isOrder" >
+                            <span v-if="book.orderByUser" class="text-warning">Вы уже заказали эту книгу</span>
+                            <span v-else class="text-danger">Кто-то уже заказал эту книгу</span>
+                        </p>
+                        <a v-else class="text-success" href="#"
                            @click="orderBookId = book.id"
                            data-toggle="modal" data-target="#bookOrder">Заказать·</a>
-                        <p v-else>
-                            <span v-if="username !== book.order.user" class="text-danger">Кто-то уже заказал эту книгу</span>
-                            <span v-else class="text-warning">Вы уже заказали эту книгу</span>
-                        </p>
                     </td>
                 </tr>
                 </tbody>
@@ -97,6 +97,7 @@
 
                 this.socket.on('books.getAll-success', _.bind(function (data) {
                     this.books = data;
+                    console.log(data);
                 }, this));
 
                 this.socket.on('orders.add-success', _.bind(function (data) {
