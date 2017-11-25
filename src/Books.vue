@@ -80,11 +80,6 @@
                         "changeDate", () => { vm.returningDate = $('#returningDate').val()}
                     );
                 });
-                // $('#order_success_ok_button').click(function (e) {
-                //     e.preventDefault();
-                //     $('#order_success_modal').modal('hide');
-                //     this.$router.push('./personal');
-                // });
             });
         },
         beforeRouteEnter (to, from, next) {
