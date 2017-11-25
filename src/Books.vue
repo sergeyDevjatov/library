@@ -26,10 +26,10 @@
                         </router-link>
                     </td>
                     <td>
-                        <p v-if="book.isOrder" >
+                        <template v-if="book.isOrder" >
                             <span v-if="book.orderByUser" class="text-warning">Вы уже заказали эту книгу</span>
                             <span v-else class="text-danger">Кто-то уже заказал эту книгу</span>
-                        </p>
+                        </template>
                         <a v-else class="text-success" href="#"
                            @click="orderBookId = book.id"
                            data-toggle="modal" data-target="#bookOrder">Заказать·</a>
@@ -39,8 +39,7 @@
             </table>
         </div>
         <Modal id="bookOrder" title="Заказать книгу" @accept="bookOrderAccept"
-               @successOk="lastOrderSuccess = false" @errorOk="lastOrderError = null"
-               :success="lastOrderSuccess" :error="lastOrderError">
+               :success.sync="lastOrderSuccess" :error.sync="lastOrderError">
             <div class="form-group row">
                 <label for="returningDate" class="col-sm-5 col-form-label" >Дата возвращения</label>
                 <div class="col-sm-7">

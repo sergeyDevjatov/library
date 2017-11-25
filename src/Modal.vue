@@ -125,10 +125,10 @@
                 this.$emit('accept', event);
             },
             onModalSuccessOkButtonClick(event){
-                this.$emit('successOk', event);
+                this.$emit('update:success', false);
             },
             onModalErrorOkButtonClick(event){
-                this.$emit('errorOk', event);
+                this.$emit('update:error', null);
             }
         }
     }
