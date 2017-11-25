@@ -51,15 +51,11 @@
 </template>
 
 <script>
-    import io from 'socket.io';
     import Modal from './Modal.vue';
 
     export default {
         components: {
             Modal
-        },
-        props:{
-            username: {type: String}
         },
         data(){
             return {
@@ -81,29 +77,31 @@
                 });
             });
         },
+        created(){
+            this.$root.$on('authUpdate', _.bind(function(){
+                this.getBooks();
+            }, this));
+
+            this.connect();
+        },
         beforeRouteEnter (to, from, next) {
             next(function(vm){
-                vm.connect();
             });
         },
         beforeRouteUpdate (to, from, next) {
-            this.connect();
             next();
         },
         methods: {
             connect(){
-                this.socket = io();
-
-                this.socket.on('books.getAll-success', _.bind(function (data) {
+                this.$root.socket.on('books.getAll-success', _.bind(function (data) {
                     this.books = data;
-                    console.log(data);
                 }, this));
 
-                this.socket.on('orders.add-success', _.bind(function (data) {
+                this.$root.socket.on('orders.add-success', _.bind(function (data) {
                     this.lastOrderSuccess = true;
                 }, this));
 
-                this.socket.on('orders.add-fail', _.bind(function (error) {
+                this.$root.socket.on('orders.add-fail', _.bind(function (error) {
                     if(error.code === 'NOAUTH')
                         this.lastOrderError = 'Вы не можете заказать книгу, поскольку вы не авторизовались.';
                 }, this));
@@ -111,10 +109,10 @@
                 this.getBooks();
             },
             getBooks(){
-                this.socket.emit('books.getAll');
+                this.$root.socket.emit('books.getAll');
             },
             bookOrderAccept(event){
-                this.socket.emit('orders.add', {returningDate: this.returningDate, bookId: this.orderBookId});
+                this.$root.socket.emit('orders.add', {returningDate: this.returningDate, bookId: this.orderBookId});
             }
         }
     }

@@ -20,5 +20,28 @@ import router from "./router.js";
 
 new Vue({
     router,
+    watch:{
+        username(){
+            this.$emit('authUpdate');
+        }
+    },
+    data(){
+        return {
+            socket: socket,
+            gotSession: false,
+            sid: null,
+            username: null,
+            session: null
+        };
+    },
+    mounted(){
+        this.socket.on('session', _.bind( function (data) {
+            this.gotSession = true;
+            this.sid = data.sid;
+            if(this.sid) {
+                this.username = data.login;
+            }
+        }, this));
+    },
     el: '#app'
 });
