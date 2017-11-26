@@ -93,8 +93,8 @@ module.exports = function (server, sessionStore, cookieParser) {
         function orderFilter(order) {
             return order ? {
                 id: order._id,
-                receivingDate: order.receivingDate,
-                returningDate: order.returningDate,
+                receivingDate: order.receivingDateFormatted,
+                returningDate: order.returningDateFormatted,
                 user: order.user,
                 book: bookFilter(order.book)
             } : null;
@@ -220,6 +220,7 @@ module.exports = function (server, sessionStore, cookieParser) {
             function onBookUpdate(err, book){
                 if (!err){
                     order.book = book;
+                    order.save();
                     socket.emit('orders.add-success', {id: order.id});
                 }
                 else
