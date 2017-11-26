@@ -29,14 +29,14 @@
                             <div v-if="errors.has('password')" class="invalid-feedback">Пароли не совпадают</div>
                         </div>
                         <div v-if="signUpError" class="alert alert-danger" role="alert">
-                            Не удалось зарегистрировать нового пользователя
+                            {{signUpErrorMsg ? signUpErrorMsg : "Не удалось зарегистрировать нового пользователя"}}
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Отмена</button>
                     <button type="button" class="btn btn-primary"
-                            v-on:click="sign_up" :disabled="!login || !password || errors.any()">Зарегистрироваться</button>
+                            @click="signUp" :disabled="!login || !password || errors.any()">Зарегистрироваться</button>
                 </div>
             </div>
         </div>
@@ -54,34 +54,53 @@
             return {
                 login: null,
                 password: null,
-                sid: null,
                 signUpError: false,
-                signUpErrorMsg: null,
-                socket: io()
+                signUpErrorMsg: null
             }
+        },
+        computed: {
+            ...Vuex.mapState(['sid', 'username', 'gotSession', 'socket'])
         },
         created(){
             this.connect();
         },
         methods: {
+            ...Vuex.mapMutations({
+                socketOn: 'addSocketHandler',
+                socketEmit: 'emitSocketEvent'
+            }),
             connect(){
-                this.socket = io();
+                this.socketOn({
+                    event: 'auth.sign_up-success',
+                    callback: _.bind(function (data) {
+                        this.error = false;
+                        this.$emit('signUp', {
+                            login: this.login,
+                            sid: data.sid
+                        });
+                        this.login = this.password = this.password_confirm = null;
+                        $(this.$refs.modal).modal('hide');
+                    }, this)
+                });
 
-                this.socket.on('auth.sign_up-success', _.bind(function (data) {
-                    this.error = false;
-                    this.$emit('signUp', {login: this.login, sid: data.sid});
-                    $(this.$refs.modal).modal('hide');
-                }, this));
-
-                this.socket.on('auth.sign_up-fail', _.bind(function (err) {
-                    if(err === 'AlreadyExists') {
-                        this.signUpError = true;
-                        this.signUpErrorMsg = 'Пользователь с таким логином уже существует';
-                    }
-                }, this));
+                this.socketOn({
+                    event: 'auth.sign_up-fail',
+                    callback: _.bind(function (err) {
+                        if (err === 'AlreadyExists') {
+                            this.signUpError = true;
+                            this.signUpErrorMsg = 'Пользователь с таким логином уже существует';
+                        }
+                    }, this)
+                });
             },
-            sign_up: function (){
-                this.socket.emit('auth.sign_up', {login: this.login, password: this.password});
+            signUp: function (){
+                this.socketEmit({
+                    event: 'auth.sign_up',
+                    data: {
+                        login: this.login,
+                        password: this.password
+                    }
+                });
             },
         }
     };

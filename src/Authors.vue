@@ -24,8 +24,6 @@
 </template>
 
 <script>
-    import io from 'socket.io';
-
     export default {
         components: {
 
@@ -35,27 +33,35 @@
                 authors: null
             }
         },
+        created(){
+            this.connect();
+        },
         beforeRouteEnter (to, from, next) {
             next(function(vm){
-                vm.connect();
             });
         },
         beforeRouteUpdate (to, from, next) {
-            this.connect();
             next();
         },
         methods: {
+            ...Vuex.mapMutations({
+                socketOn: 'addSocketHandler',
+                socketEmit: 'emitSocketEvent'
+            }),
             connect(){
-                this.socket = io();
-
-                this.socket.on('authors.getAll-success', _.bind(function (data) {
-                    this.authors = data;
-                }, this));
+                this.socketOn({
+                    event: 'authors.getAll-success',
+                    callback: _.bind(function (data) {
+                        this.authors = data;
+                    }, this)
+                });
 
                 this.getAuthors();
             },
             getAuthors(){
-                this.socket.emit('authors.getAll');
+                this.socketEmit({
+                    event: 'authors.getAll'
+                });
             }
         }
     }
