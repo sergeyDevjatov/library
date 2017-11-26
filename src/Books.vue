@@ -61,12 +61,12 @@
             return {
                 books: null,
                 orderBookId: null,
-                socket: null,
                 returningDate: null,
                 lastOrderSuccess: false,
                 lastOrderError: null
             };
         },
+        computed: Vuex.mapState(['sid', 'username', 'gotSession', 'socket']),
         mounted: function () {
             let vm = this;
             this.$nextTick(function () {
@@ -77,11 +77,12 @@
                 });
             });
         },
-        created(){
-            this.$root.$on('authUpdate', _.bind(function(){
+        watch: {
+            username(){
                 this.getBooks();
-            }, this));
-
+            }
+        },
+        created(){
             this.connect();
         },
         beforeRouteEnter (to, from, next) {
@@ -93,26 +94,49 @@
         },
         methods: {
             connect(){
-                this.$root.socket.on('books.getAll-success', _.bind(function (data) {
-                    this.books = data;
-                }, this));
 
-                this.$root.socket.on('orders.add-success', _.bind(function (data) {
-                    this.lastOrderSuccess = true;
-                }, this));
+                this.$store.commit({
+                    type: 'addSocketHandler',
+                    event: 'books.getAll-success',
+                    callback: _.bind(function (data) {
+                        this.books = data;
+                    }, this)
+                });
 
-                this.$root.socket.on('orders.add-fail', _.bind(function (error) {
-                    if(error.code === 'NOAUTH')
-                        this.lastOrderError = 'Вы не можете заказать книгу, поскольку вы не авторизовались.';
-                }, this));
+                this.$store.commit({
+                    type: 'addSocketHandler',
+                    event: 'orders.add-success',
+                    callback: _.bind(function (data) {
+                        this.lastOrderSuccess = true;
+                    }, this)
+                });
+
+                this.$store.commit({
+                    type: 'addSocketHandler',
+                    event: 'orders.add-fail',
+                    callback:_.bind(function (error) {
+                        if(error.code === 'NOAUTH')
+                            this.lastOrderError = 'Вы не можете заказать книгу, поскольку вы не авторизовались.';
+                    }, this)
+                });
 
                 this.getBooks();
             },
             getBooks(){
-                this.$root.socket.emit('books.getAll');
+                this.$store.commit({
+                    type: 'emitSocketEvent',
+                    event: 'books.getAll'
+                });
             },
             bookOrderAccept(event){
-                this.$root.socket.emit('orders.add', {returningDate: this.returningDate, bookId: this.orderBookId});
+                this.$store.commit({
+                    type: 'emitSocketEvent',
+                    event: 'orders.add',
+                    data: {
+                        returningDate: this.returningDate,
+                        bookId: this.orderBookId
+                    }
+                });
             }
         }
     }

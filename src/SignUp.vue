@@ -69,7 +69,7 @@
 
                 this.socket.on('auth.sign_up-success', _.bind(function (data) {
                     this.error = false;
-                    this.$emit('signed_up', {login: this.login, sid: data.sid});
+                    this.$emit('signUp', {login: this.login, sid: data.sid});
                     $(this.$refs.modal).modal('hide');
                 }, this));
 

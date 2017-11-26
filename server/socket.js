@@ -25,6 +25,7 @@ module.exports = function (server, sessionStore, cookieParser) {
                     session.login = data.login;
                     session.save();
                     socket.emit('auth.sign_in-success', {sid: session.sid});
+                    socket.emit('session', {sid: session.sid, login: session.login});
                 }
                 else
                     socket.emit('auth.sign_in-fail', 'NotExists');
@@ -41,6 +42,7 @@ module.exports = function (server, sessionStore, cookieParser) {
                             session.login = data.login;
                             session.save();
                             socket.emit('auth.sign_up-success', {sid: session.sid});
+                            socket.emit('session', {sid: session.sid, login: session.login});
                         }
                         else
                             socket.emit('auth.sign_up-fail');
@@ -55,6 +57,7 @@ module.exports = function (server, sessionStore, cookieParser) {
             session.sid = session.login = null;
             session.save();
             socket.emit('auth.sign_out-success');
+            socket.emit('session', {sid: session.sid, login: session.login});
         });
 
 

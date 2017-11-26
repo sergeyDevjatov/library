@@ -1,6 +1,6 @@
 <template>
-    <div id="auth" v-show="$root.gotSession">
-        <form v-if="!$root.username" v-on:submit.prevent="sign_in" id="auth_form" class="form-inline">
+    <div id="auth" v-show="gotSession">
+        <form v-if="!username" @submit.prevent="signIn" id="auth_form" class="form-inline">
             <div class="form-group">
                 <label for="auth_login" class="sr-only">Логин</label>
                 <input type="text" id="auth_login" name="login" placeholder="логин" v-model="login"
@@ -17,14 +17,14 @@
         <div class="row" v-else id="welcome">
             <div class="col">
                 <router-link class="link text-light" to="/personal">
-                    Добро пожаловать, {{$root.username}}
+                    Добро пожаловать, {{username}}
                 </router-link>
             </div>
             <div class="col col-md-auto">
-                <button class="btn btn-primary btn-sm" @click="sign_out">Выйти</button>
+                <button class="btn btn-primary btn-sm" @click="signOut">Выйти</button>
             </div>
         </div>
-        <SignUp id="sign-up_modal" @signed_up="username=$event.login; sid = $event.sid"/>
+        <SignUp id="sign-up_modal" @signUp="onSignUp"/>
     </div>
 </template>
 
@@ -39,14 +39,11 @@
             return {
                 login: null,
                 password: null,
-                username: null,
-                sid: null,
                 showSignup: false,
-                socket: null,
                 signInError: false,
-                gotSession: false
             }
         },
+        computed: Vuex.mapState(['sid', 'username', 'gotSession', 'socket']),
         created(){
             this.connect();
         },
@@ -59,27 +56,66 @@
         },
         methods: {
             connect: function(){
-                this.$root.socket.on('auth.sign_in-success', _.bind(function (data) {
-                    this.$root.username = this.login;
-                    this.login = this.password = null;
-                    this.$root.sid = data.sid;
-                    this.signInError = false;
-                }, this));
+                this.$store.commit({
+                    type: 'addSocketHandler',
+                    event: 'auth.sign_in-success',
+                    callback: _.bind(function (data) {
+                        this.$store.commit({
+                            type: 'auth',
+                            username: this.login,
+                            sid: data.sid
+                        });
+                        this.signInError = false;
+                        this.login = this.password = null;
+                    }, this)
+                });
 
-                this.$root.socket.on('auth.sign_in-fail', _.bind(function () {
-                    this.$root.username = null;
-                    this.signInError = true;
-                }, this));
+                this.$store.commit({
+                    type: 'addSocketHandler',
+                    event: 'auth.sign_in-fail',
+                    callback: _.bind(function () {
+                        // this.$store.commit({
+                        //     type: 'auth',
+                        //     username: null
+                        // });
+                        this.signInError = true;
+                    }, this)
+                });
 
-                this.$root.socket.on('auth.sign_out-success', _.bind(function () {
-                    this.$root.sid = this.$root.username = null;
-                }, this));
+                this.$store.commit({
+                    type: 'addSocketHandler',
+                    event: 'auth.sign_out-success',
+                    callback: _.bind(function () {
+                        this.$store.commit({
+                            type: 'auth',
+                            sid: null,
+                            username: null
+                        });
+                    }, this)
+                });
             },
-            sign_in: function (){
-                this.$root.socket.emit('auth.sign_in', {login: this.login, password: this.password});
+            signIn(){
+                this.$store.commit({
+                    type: 'emitSocketEvent',
+                    event: 'auth.sign_in',
+                    data: {
+                        login: this.login,
+                        password: this.password
+                    }
+                });
             },
-            sign_out: function (){
-                this.$root.socket.emit('auth.sign_out');
+            signOut(){
+                this.$store.commit({
+                    type: 'emitSocketEvent',
+                    event: 'auth.sign_out'
+                });
+            },
+            onSignUp(event){
+                this.$store.commit({
+                    type: 'auth',
+                    username: event.login,
+                    sid: event.sid
+                });
             }
         }
     };
