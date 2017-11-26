@@ -66,7 +66,9 @@
                 lastOrderError: null
             };
         },
-        computed: Vuex.mapState(['sid', 'username', 'gotSession', 'socket']),
+        computed: {
+            ...Vuex.mapState(['sid', 'username', 'gotSession', 'socket'])
+        },
         mounted: function () {
             let vm = this;
             this.$nextTick(function () {
@@ -93,26 +95,27 @@
             next();
         },
         methods: {
+            ...Vuex.mapMutations({
+                socketOn: 'addSocketHandler',
+                socketEmit: 'emitSocketEvent'
+            }),
             connect(){
 
-                this.$store.commit({
-                    type: 'addSocketHandler',
+                this.socketOn({
                     event: 'books.getAll-success',
                     callback: _.bind(function (data) {
                         this.books = data;
                     }, this)
                 });
 
-                this.$store.commit({
-                    type: 'addSocketHandler',
+                this.socketOn({
                     event: 'orders.add-success',
                     callback: _.bind(function (data) {
                         this.lastOrderSuccess = true;
                     }, this)
                 });
 
-                this.$store.commit({
-                    type: 'addSocketHandler',
+                this.socketOn({
                     event: 'orders.add-fail',
                     callback:_.bind(function (error) {
                         if(error.code === 'NOAUTH')
@@ -123,14 +126,12 @@
                 this.getBooks();
             },
             getBooks(){
-                this.$store.commit({
-                    type: 'emitSocketEvent',
+                this.socketEmit({
                     event: 'books.getAll'
                 });
             },
             bookOrderAccept(event){
-                this.$store.commit({
-                    type: 'emitSocketEvent',
+                this.socketEmit({
                     event: 'orders.add',
                     data: {
                         returningDate: this.returningDate,

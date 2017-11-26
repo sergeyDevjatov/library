@@ -39,11 +39,12 @@
             return {
                 login: null,
                 password: null,
-                showSignup: false,
                 signInError: false,
             }
         },
-        computed: Vuex.mapState(['sid', 'username', 'gotSession', 'socket']),
+        computed: {
+            ...Vuex.mapState(['sid', 'username', 'gotSession', 'socket'])
+        },
         created(){
             this.connect();
         },
@@ -55,13 +56,16 @@
             next();
         },
         methods: {
+            ...Vuex.mapMutations({
+                socketOn: 'addSocketHandler',
+                socketEmit: 'emitSocketEvent',
+                auth: 'auth'
+            }),
             connect: function(){
-                this.$store.commit({
-                    type: 'addSocketHandler',
+                this.socketOn({
                     event: 'auth.sign_in-success',
                     callback: _.bind(function (data) {
-                        this.$store.commit({
-                            type: 'auth',
+                        this.auth({
                             username: this.login,
                             sid: data.sid
                         });
@@ -70,24 +74,17 @@
                     }, this)
                 });
 
-                this.$store.commit({
-                    type: 'addSocketHandler',
+                this.socketOn({
                     event: 'auth.sign_in-fail',
                     callback: _.bind(function () {
-                        // this.$store.commit({
-                        //     type: 'auth',
-                        //     username: null
-                        // });
                         this.signInError = true;
                     }, this)
                 });
 
-                this.$store.commit({
-                    type: 'addSocketHandler',
+                this.socketOn({
                     event: 'auth.sign_out-success',
                     callback: _.bind(function () {
-                        this.$store.commit({
-                            type: 'auth',
+                        this.auth({
                             sid: null,
                             username: null
                         });
@@ -95,8 +92,7 @@
                 });
             },
             signIn(){
-                this.$store.commit({
-                    type: 'emitSocketEvent',
+                this.socketEmit({
                     event: 'auth.sign_in',
                     data: {
                         login: this.login,
@@ -105,14 +101,12 @@
                 });
             },
             signOut(){
-                this.$store.commit({
-                    type: 'emitSocketEvent',
+                this.socketEmit({
                     event: 'auth.sign_out'
                 });
             },
             onSignUp(event){
-                this.$store.commit({
-                    type: 'auth',
+                this.auth({
                     username: event.login,
                     sid: event.sid
                 });
