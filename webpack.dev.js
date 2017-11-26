@@ -54,7 +54,7 @@ module.exports = {
                 exclude: /(node_modules|bower_components|dist)/,
                 loader: 'babel-loader',
                 query: {
-                    presets: ['env']
+                    presets: ['env'],
                 }
             },
             {
