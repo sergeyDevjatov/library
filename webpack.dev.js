@@ -19,9 +19,9 @@ module.exports = {
         alias: {
             'vue$': 'vue/dist/vue.esm.js',
             'vue-router$': 'vue-router/dist/vue-router.esm.js',
-            'socket.io$': 'socket.io-client/dist/socket.io.js',
-            'mongodb$': 'socket.io-client/dist/socket.io.js',
-            'vee-validate$': 'vee-validate/dist/vee-validate.esm.js'
+            'vuex$': 'vuex/dist/vuex.esm.js',
+            'vee-validate$': 'vee-validate/dist/vee-validate.esm.js',
+            'socket.io$': 'socket.io-client/dist/socket.io.js'
         }
     },
     module: {
@@ -80,6 +80,10 @@ module.exports = {
             underscore: 'underscore',
             'window.jQuery': 'jquery',
             Popper: ['popper.js', 'default'],
+            Vue: ['vue', 'default'],
+            VueRouter: ['vue-router', 'default'],
+            Vuex: ['vuex', 'default'],
+            VeeValidate: ['vee-validate', 'default']
         })
     ]
 };
