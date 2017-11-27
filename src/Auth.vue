@@ -14,19 +14,19 @@
             <button type="submit" class="btn btn-primary">Войти</button>
             <a href="#" data-toggle="modal" data-target="#sign-up_modal">Зарегистрироваться</a>
         </form>
-        <div class="row" v-else id="welcome">
-            <div class="nam col">
-                <div class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" style="color: white"
+        <div class="row d-flex" v-else id="welcome">
+            <div class="nam col align-self-center">
+                <div class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" style="color: white"
                        href="#" role="button" aria-haspopup="true" aria-expanded="false">Добро пожаловать, {{username}}</a>
-                    <div class="dropdown-menu">
+                    <div class="dropdown-menu dropdown-menu-right" style="right: 0; left: auto;">
                         <router-link class="dropdown-item" to="/personal" exact>Заказы</router-link>
                         <router-link class="dropdown-item" to="/personal/profile">Профиль</router-link>
                     </div>
                 </div>
             </div>
-            <div class="col col-md-auto d-flex">
-                <button class="btn btn-primary btn-sm align-self-center" @click="signOut">Выйти</button>
+            <div class="col col-md-auto align-self-center">
+                <button class="btn btn-primary btn-sm" @click="signOut">Выйти</button>
             </div>
         </div>
         <SignUp id="sign-up_modal" @signUp="onSignUp"/>
