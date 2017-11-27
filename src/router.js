@@ -5,6 +5,8 @@ import Books from "./Books.vue";
 import Authors from "./Authors.vue";
 import Genres from "./Genres.vue";
 import Personal from "./Personal.vue";
+import PersonalOrders from "./PersonalOrders.vue";
+import PersonalProfile from "./PersonalProfile.vue";
 
 export default new VueRouter({
     linkActiveClass: 'active',
@@ -14,35 +16,46 @@ export default new VueRouter({
             components: {
                 auth: Auth,
                 page: Main
-            }
+            },
+            meta: {title: 'Библиотека'}
         },
         {
             path: '/books',
             components: {
                 auth: Auth,
                 page: Books
-            }
+            },
         },
         {
             path: '/authors',
             components: {
                 auth: Auth,
                 page: Authors
-            }
+            },
         },
         {
             path: '/genres',
             components: {
                 auth: Auth,
                 page: Genres
-            }
+            },
         },
         {
             path: '/personal',
             components: {
                 auth: Auth,
                 page: Personal
-            }
+            },
+            children: [
+                {
+                    path: '',
+                    component:  PersonalOrders,
+                },
+                {
+                    path: 'profile',
+                    component: PersonalProfile,
+                }
+            ]
         },
     ]
 });
