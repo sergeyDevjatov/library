@@ -60,7 +60,11 @@ new Vue({
     },
     metaInfo: {
         title: 'Информационная система библиотеки',
-        titleTemplate: '%s | Информационная система библиотеки'
+        titleTemplate: (titleChunk) => {
+            let defaultTitle = 'Информационная система библиотеки';
+            // If undefined or blank then we don't need the hyphen
+            return (titleChunk && titleChunk !== defaultTitle) ? `${titleChunk} | Информационная система библиотеки` : defaultTitle;
+        }
     },
     el: '#app'
 });
