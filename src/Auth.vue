@@ -15,13 +15,18 @@
             <a href="#" data-toggle="modal" data-target="#sign-up_modal">Зарегистрироваться</a>
         </form>
         <div class="row" v-else id="welcome">
-            <div class="col">
-                <router-link class="link text-light" to="/personal">
-                    Добро пожаловать, {{username}}
-                </router-link>
+            <div class="nam col">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" style="color: white"
+                       href="#" role="button" aria-haspopup="true" aria-expanded="false">Добро пожаловать, {{username}}</a>
+                    <div class="dropdown-menu">
+                        <router-link class="dropdown-item" to="/personal" exact>Заказы</router-link>
+                        <router-link class="dropdown-item" to="/personal/profile">Профиль</router-link>
+                    </div>
+                </div>
             </div>
-            <div class="col col-md-auto">
-                <button class="btn btn-primary btn-sm" @click="signOut">Выйти</button>
+            <div class="col col-md-auto d-flex">
+                <button class="btn btn-primary btn-sm align-self-center" @click="signOut">Выйти</button>
             </div>
         </div>
         <SignUp id="sign-up_modal" @signUp="onSignUp"/>
