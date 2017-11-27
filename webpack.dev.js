@@ -19,6 +19,7 @@ module.exports = {
         alias: {
             'vue$': 'vue/dist/vue.esm.js',
             'vue-router$': 'vue-router/dist/vue-router.esm.js',
+            'vue-meta$': 'vue-meta/lib/vue-meta.js',
             'vuex$': 'vuex/dist/vuex.esm.js',
             'vee-validate$': 'vee-validate/dist/vee-validate.esm.js',
             'socket.io$': 'socket.io-client/dist/socket.io.js'
@@ -83,6 +84,7 @@ module.exports = {
             Vue: ['vue', 'default'],
             VueRouter: ['vue-router', 'default'],
             Vuex: ['vuex', 'default'],
+            VueMeta: 'vue-meta',
             VeeValidate: ['vee-validate', 'default']
         })
     ]
