@@ -29,6 +29,9 @@
         created(){
             this.connect();
         },
+        metaInfo: {
+            title: 'Жанры',
+        },
         beforeRouteEnter (to, from, next) {
             next(function(vm){
             });

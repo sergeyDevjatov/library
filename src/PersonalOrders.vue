@@ -1,6 +1,5 @@
 <template>
     <div id="orders">
-        <h3>Заказы</h3>
         <div class="text-center table-responsive table-bordered table-hover">
             <table class="table table-striped">
                 <thead class="thead-dark">
@@ -37,6 +36,9 @@
         },
         computed: {
             ...Vuex.mapState(['username', 'socket'])
+        },
+        metaInfo: {
+            title: 'Заказы | Личный кабинет',
         },
         created(){
             this.connect();

@@ -1,6 +1,5 @@
 <template>
     <div id="profile">
-        <h3>Профиль</h3>
         <div>
             Not implemented yet...
         </div>
@@ -9,5 +8,8 @@
 
 <script>
     export default {
+        metaInfo: {
+            title: 'Профиль | Личный кабинет',
+        },
     }
 </script>

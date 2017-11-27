@@ -9,5 +9,8 @@
         computed: {
             ...Vuex.mapState(['username', 'socket'])
         },
+        metaInfo: {
+            title: 'Личный кабинет',
+        },
     }
 </script>

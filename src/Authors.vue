@@ -36,6 +36,9 @@
         created(){
             this.connect();
         },
+        metaInfo: {
+            title: 'Авторы',
+        },
         beforeRouteEnter (to, from, next) {
             next(function(vm){
             });

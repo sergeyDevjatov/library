@@ -69,6 +69,9 @@
         computed: {
             ...Vuex.mapState(['sid', 'username', 'gotSession', 'socket'])
         },
+        metaInfo: {
+            title: 'Книги',
+        },
         mounted: function () {
             let vm = this;
             this.$nextTick(function () {
