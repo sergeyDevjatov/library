@@ -14,6 +14,7 @@ socket.on('connection-fail', function onConnectionFail(){
 
 Vue.use(VeeValidate);
 Vue.use(VueRouter);
+Vue.use(VueMeta);
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
@@ -56,6 +57,10 @@ new Vue({
                 });
             }, this)
         });
+    },
+    metaInfo: {
+        title: 'Информационная система библиотеки',
+        titleTemplate: '%s | Информационная система библиотеки'
     },
     el: '#app'
 });
