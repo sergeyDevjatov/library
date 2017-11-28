@@ -17,11 +17,31 @@ module.exports = function () {
 
     mongoose.Promise = global.Promise;
 
+    statusSchema = mongoose.Schema({
+        name: {
+            type: String,
+            index: true,
+            unique: true
+        }
+    });
+
     userSchema = mongoose.Schema({
-        login: String, password: String, salt: String, orders: [{
+        login: {
+            type: String,
+            index: true,
+            unique: true
+        },
+        password: String,
+        salt: String,
+        orders: [{
             type: mongoose.Schema.Types.ObjectId,
             ref: 'Order'
-        }]
+        }],
+        profile: {
+            name: String,
+            lastName: String,
+            status: statusSchema
+        }
     });
 
     authorSchema = mongoose.Schema({
@@ -33,7 +53,11 @@ module.exports = function () {
     authorSchema.virtual('deadFormatted').get(function (){ return dayMonthYearDateFormat(this.dead); });
 
     genreSchema = mongoose.Schema({
-        name: String
+        name: {
+            type: String,
+            index: true,
+            unique: true
+        }
     });
 
     bookSchema = mongoose.Schema({
@@ -67,6 +91,7 @@ module.exports = function () {
         Genre: mongoose.model('Genre', genreSchema),
         Book: mongoose.model('Book', bookSchema),
         Order: mongoose.model('Order', orderSchema),
+        Status: mongoose.model('Status', statusSchema),
         close: mongoose.connection.close
     };
 };
