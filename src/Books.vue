@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="text-center table-responsive table-bordered table-hover" id="books">
-            <table class="table table-striped">
+        <div class="text-center" id="books">
+            <table class="table table-striped table-bordered table-hover">
                 <thead class="thead-dark">
                 <tr>
                     <th>#</th>
@@ -107,7 +107,7 @@
                 this.socketOn({
                     event: 'books.getAll-success',
                     callback: _.bind(function (data) {
-                        this.books = data;
+                        console.log(this.books = data);
                     }, this)
                 });
 
