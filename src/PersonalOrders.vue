@@ -59,7 +59,6 @@
                 this.socketOn({
                     event: 'orders.getAll-success',
                     callback: _.bind(function (data) {
-                        console.log(data);
                         this.orders = data;
                     }, this)
                 });

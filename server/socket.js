@@ -228,6 +228,24 @@ module.exports = function (server, sessionStore, cookieParser) {
             }
         });
 
+        socket.on('users.getByLogin', function onGetUserByLoginRequest(data){
+            db.User.findOne({login: data.login}, function onFind(err, user) {
+                if(!err){
+                    socket.emit('users.getByLogin-success', {
+                        id: user._id,
+                        login: user.login,
+                        profile: {
+                            name: user.profile.name,
+                            lastName: user.profile.lastName,
+                            status: user.profile.status.name
+                        }
+                    });
+                }
+                else{
+                    socket.emit('users.getByLogin-fail', err);
+                }
+            })
+        });
     });
 
     return io;

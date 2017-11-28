@@ -107,7 +107,7 @@
                 this.socketOn({
                     event: 'books.getAll-success',
                     callback: _.bind(function (data) {
-                        console.log(this.books = data);
+                        this.books = data;
                     }, this)
                 });
 
